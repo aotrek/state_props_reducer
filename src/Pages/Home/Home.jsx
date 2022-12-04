@@ -1,30 +1,22 @@
-import React from "react";
-import ProductCard from "../../componetnt/ProductCard";
-import { useProductProvider } from "../../hooks/useProductProvider";
+import React,{useState,useEffect} from "react";
+import { useSelector } from "react-redux";
+import ProductCard from "../../components/ProductCard";
 
 export default function Home() {
-  const { state } = useProductProvider();
-  console.log(state.products);
-  let content;
-  if (state?.loading) {
-    content = <p>Loading</p>;
-  }
-  if (state?.error) {
-    content = <p>Error</p>;
-  }
-  if (!state?.loading && !state?.error && state?.products.length === 0) {
-    content = <p>Null</p>;
-  }
-  if (!state?.loading && !state?.error && state?.products.length) {
-    content = state?.products.map((product, i) => (
-      console.log(i)
-      // <ProductCard key={i} product={product} />
-    ));
-  }
+  const [product, setProduct] = useState([]);
+  useEffect(() => {
+    fetch("products.json")
+      .then((res) => res.json())
+      .then((data) => setProduct(data));
+  }, []);
+  /* const state = useSelector(state => state);
+  console.log(state); */
   return (
     <>
       <div className="max-w-7xl px-5 mx-auto grid grid-cols-1 md:grid-cols-3 gap-6 my-4">
-        {content}
+        {product.map((p, i) => (
+          <ProductCard key={i} product={p} />
+        ))}
       </div>
     </>
   );
